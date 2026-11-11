@@ -1,0 +1,24 @@
+# Зависимости
+node_modules/
+
+# Локальные переменные окружения (шаблон — .env.example)
+.env
+
+# Данные, которые серверы итоговых проектов пишут при работе
+**/diploma/db.json
+
+# Логи
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Отчёты о покрытии
+coverage/
+.nyc_output/
+
+# Редакторы и ОС
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

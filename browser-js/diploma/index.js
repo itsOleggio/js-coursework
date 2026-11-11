@@ -1,5 +1,9 @@
 require('dotenv').config();
-const { PORT, PUBLIC_PATH, INDEX_FILE } = process.env;
+const { PORT, PUBLIC_PATH, INDEX_FILE, SESSION_KEYS } = process.env;
+
+if (!SESSION_KEYS) {
+  throw new Error('Не задан SESSION_KEYS: скопируйте .env.example в .env');
+}
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
@@ -21,7 +25,7 @@ app.use(express.static(`${__dirname}/${PUBLIC_PATH}`));
 app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
-  keys: ['authorized', 'login'],
+  keys: SESSION_KEYS.split(','),
 }));
 
 const api = require('./routes');

@@ -7,11 +7,14 @@ const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
-const api = require('./routes');
 
 const {
-  PORT, PUBLIC_PATH, INDEX_FILE, HOME_FILE,
+  PORT, PUBLIC_PATH, INDEX_FILE, HOME_FILE, SESSION_KEYS,
 } = process.env;
+
+if (!SESSION_KEYS) {
+  throw new Error('Не задан SESSION_KEYS: скопируйте .env.example в .env');
+}
 
 const db = low(new FileSync('db.json'));
 
@@ -72,11 +75,14 @@ function setDefaultUser(database) {
 
 if (!db.get('users').value()) setDefaultUser(db);
 
+// Роуты открывают db.json при подключении, поэтому подключаем их после заполнения базы
+const api = require('./routes');
+
 const app = express();
 app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
-  keys: ['authorized', 'login'],
+  keys: SESSION_KEYS.split(','),
 }));
 app.use(morgan('tiny'));
 app.use(express.static(`${__dirname}/${PUBLIC_PATH}`));
